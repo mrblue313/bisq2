@@ -51,6 +51,7 @@ public final class SettingsStore implements PersistableStore<SettingsStore> {
     final Observable<Boolean> preventStandbyMode = new Observable<>();
     String languageCode;
     final ObservableSet<String> supportedLanguageCodes = new ObservableSet<>();
+    final Observable<Boolean> connectToI2p = new Observable<>();
 
     public SettingsStore() {
         this(new Cookie(),
@@ -67,7 +68,8 @@ public final class SettingsStore implements PersistableStore<SettingsStore> {
                 false,
                 LanguageRepository.getDefaultLanguage(),
                 true,
-                Set.of(LanguageRepository.getDefaultLanguage()));
+                Set.of(LanguageRepository.getDefaultLanguage()),
+                true);
     }
 
     public SettingsStore(Cookie cookie,
@@ -84,7 +86,8 @@ public final class SettingsStore implements PersistableStore<SettingsStore> {
                          boolean closeMyOfferWhenTaken,
                          String languageCode,
                          boolean preventStandbyMode,
-                         Set<String> supportedLanguageCodes) {
+                         Set<String> supportedLanguageCodes,
+                         boolean connectToI2p) {
         this.cookie = cookie;
         this.dontShowAgainMap.putAll(dontShowAgainMap);
         this.useAnimations.set(useAnimations);
@@ -100,6 +103,7 @@ public final class SettingsStore implements PersistableStore<SettingsStore> {
         this.languageCode = languageCode;
         this.preventStandbyMode.set(preventStandbyMode);
         this.supportedLanguageCodes.setAll(supportedLanguageCodes);
+        this.connectToI2p.set(connectToI2p);
     }
 
     @Override
@@ -120,6 +124,7 @@ public final class SettingsStore implements PersistableStore<SettingsStore> {
                 .setLanguageCode(languageCode)
                 .setPreventStandbyMode(preventStandbyMode.get())
                 .addAllSupportedLanguageCodes(new ArrayList<>(supportedLanguageCodes))
+                .setConnectToI2P(connectToI2p.get())
                 .build();
     }
 
@@ -139,7 +144,8 @@ public final class SettingsStore implements PersistableStore<SettingsStore> {
                 proto.getCloseMyOfferWhenTaken(),
                 proto.getLanguageCode(),
                 proto.getPreventStandbyMode(),
-                new HashSet<>(proto.getSupportedLanguageCodesList()));
+                new HashSet<>(proto.getSupportedLanguageCodesList()),
+                proto.getConnectToI2P());
     }
 
     @Override
@@ -169,7 +175,8 @@ public final class SettingsStore implements PersistableStore<SettingsStore> {
                 closeMyOfferWhenTaken.get(),
                 languageCode,
                 preventStandbyMode.get(),
-                new HashSet<>(supportedLanguageCodes));
+                new HashSet<>(supportedLanguageCodes),
+                connectToI2p.get());
     }
 
     @Override
@@ -192,6 +199,7 @@ public final class SettingsStore implements PersistableStore<SettingsStore> {
             languageCode = persisted.languageCode;
             preventStandbyMode.set(persisted.preventStandbyMode.get());
             supportedLanguageCodes.setAll(persisted.supportedLanguageCodes);
+            connectToI2p.set(persisted.connectToI2p.get());
         } catch (Exception e) {
             log.error("Exception at applyPersisted", e);
         }

@@ -40,7 +40,7 @@ public class PreferencesController implements Controller {
     private final SettingsService settingsService;
     private final PreferencesModel model;
     private Pin chatNotificationTypePin, useAnimationsPin, getPreventStandbyModePin, offerOnlyPin,
-            closeMyOfferWhenTakenPin, getSupportedLanguageCodesPin, requiredTotalReputationScorePin;
+            closeMyOfferWhenTakenPin, getSupportedLanguageCodesPin, requiredTotalReputationScorePin, connectToI2pPin;
     private Subscription notifyForPreReleasePin;
 
     public PreferencesController(ServiceProvider serviceProvider) {
@@ -69,6 +69,8 @@ public class PreferencesController implements Controller {
                 .to(settingsService.getCloseMyOfferWhenTaken());
         getSupportedLanguageCodesPin = FxBindings.<String, String>bind(model.getSelectedSupportedLanguageCodes())
                 .to(settingsService.getSupportedLanguageCodes());
+        connectToI2pPin = FxBindings.bindBiDir(model.getConnectToI2p())
+                .to(settingsService.getConnectToI2p());
 
         model.getNotifyForPreRelease().set(settingsService.getCookie().asBoolean(CookieKey.NOTIFY_FOR_PRE_RELEASE).orElse(false));
         notifyForPreReleasePin = EasyBind.subscribe(model.getNotifyForPreRelease(),
@@ -87,6 +89,7 @@ public class PreferencesController implements Controller {
         getPreventStandbyModePin.unbind();
         getSupportedLanguageCodesPin.unbind();
         notifyForPreReleasePin.unsubscribe();
+        connectToI2pPin.unbind();
     }
 
     void onSelectLanguage(String languageCode) {

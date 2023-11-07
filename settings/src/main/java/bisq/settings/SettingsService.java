@@ -63,6 +63,7 @@ public class SettingsService implements PersistenceClient<SettingsStore>, Servic
         getUseAnimations().addObserver(value -> persist());
         getPreventStandbyMode().addObserver(value -> persist());
         getCloseMyOfferWhenTaken().addObserver(value -> persist());
+        getConnectToI2p().addObserver(value -> persist());
         getSupportedLanguageCodes().addObserver(this::persist);
         isInitialized = true;
         return CompletableFuture.completedFuture(true);
@@ -133,6 +134,10 @@ public class SettingsService implements PersistenceClient<SettingsStore>, Servic
 
     public Observable<ChatNotificationType> getChatNotificationType() {
         return persistableStore.chatNotificationType;
+    }
+
+    public Observable<Boolean> getConnectToI2p() {
+        return persistableStore.connectToI2p;
     }
 
     public void setTacAccepted(boolean value) {

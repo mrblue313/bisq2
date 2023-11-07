@@ -60,7 +60,7 @@ public class PreferencesView extends View<VBox, PreferencesModel, PreferencesCon
             new NumberValidator(Res.get("settings.preferences.trade.requiredTotalReputationScore.invalid"));
 
     private final Button resetDontShowAgain, addLanguageButton;
-    private final Switch useAnimations, preventStandbyMode, offersOnlySwitch, closeMyOfferWhenTaken, notifyForPreRelease;
+    private final Switch useAnimations, preventStandbyMode, offersOnlySwitch, closeMyOfferWhenTaken, notifyForPreRelease, connectToI2p;
     private final ToggleGroup notificationsToggleGroup = new ToggleGroup();
     private final RadioButton all, mention, off;
     private final ChangeListener<Toggle> notificationsToggleListener;
@@ -195,6 +195,12 @@ public class PreferencesView extends View<VBox, PreferencesModel, PreferencesCon
 
         VBox tradeVBox = new VBox(10, requiredTotalReputationScore, offersOnlySwitch, closeMyOfferWhenTaken);
 
+
+        // Network
+        Label networkHeadline = new Label(Res.get("settings.preferences.network.headline"));
+        networkHeadline.getStyleClass().add("large-thin-headline");
+        connectToI2p = new Switch(Res.get("settings.preferences.network.connectToI2p"));
+
         Insets insets = new Insets(0, 5, 0, 5);
         VBox.setMargin(languageSelection, insets);
         VBox.setMargin(supportedLanguageGridPane, insets);
@@ -205,7 +211,8 @@ public class PreferencesView extends View<VBox, PreferencesModel, PreferencesCon
                 supportedLanguagesHeadline, getLine(), supportedLanguageGridPane,
                 notificationsHeadline, getLine(), notificationsVBox,
                 displayHeadline, getLine(), displayVBox,
-                tradeHeadline, getLine(), tradeVBox);
+                tradeHeadline, getLine(), tradeVBox,
+                networkHeadline, getLine(), connectToI2p);
 
         notificationsToggleListener = (observable, oldValue, newValue) -> controller.onSetChatNotificationType((ChatNotificationType) newValue.getUserData());
     }
@@ -249,6 +256,8 @@ public class PreferencesView extends View<VBox, PreferencesModel, PreferencesCon
                 controller.onAddSupportedLanguage();
             }
         });
+
+        connectToI2p.selectedProperty().bindBidirectional(model.getConnectToI2p());
     }
 
     @Override
@@ -273,6 +282,8 @@ public class PreferencesView extends View<VBox, PreferencesModel, PreferencesCon
         languageSelection.resetValidation();
         supportedLanguagesComboBox.resetValidation();
         requiredTotalReputationScore.resetValidation();
+
+        connectToI2p.selectedProperty().unbindBidirectional(model.getConnectToI2p());
     }
 
     private Region getLine() {
