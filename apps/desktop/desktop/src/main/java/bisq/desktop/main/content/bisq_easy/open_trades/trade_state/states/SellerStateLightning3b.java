@@ -18,6 +18,7 @@
 package bisq.desktop.main.content.bisq_easy.open_trades.trade_state.states;
 
 import bisq.chat.bisq_easy.open_trades.BisqEasyOpenTradeChannel;
+import bisq.common.data.Pair;
 import bisq.desktop.ServiceProvider;
 import bisq.desktop.components.controls.WrappingText;
 import bisq.desktop.main.content.bisq_easy.components.WaitingAnimation;
@@ -85,9 +86,14 @@ public class SellerStateLightning3b extends BaseState {
     public static class View extends BaseState.View<Model, Controller> {
         private final Button button;
         private final WaitingAnimation waitingAnimation;
+        private final WrappingText btcSentConfirmation;
 
         private View(Model model, Controller controller) {
             super(model, controller);
+
+            Pair<WrappingText, HBox> confirmPair = FormUtils.getConfirmInfo();
+            btcSentConfirmation = confirmPair.getFirst();
+            HBox btcSentConfirmedHBox = confirmPair.getSecond();
 
             waitingAnimation = new WaitingAnimation(WaitingState.BITCOIN_CONFIRMATION);
             WrappingText headline = FormUtils.getHeadline(Res.get("bisqEasy.tradeState.info.seller.phase3b.headline.ln"));
@@ -98,12 +104,14 @@ public class SellerStateLightning3b extends BaseState {
             button.setDefaultButton(true);
             VBox.setMargin(button, new Insets(25, 0, 5, 0));
 
-            root.getChildren().addAll(waitingInfo, button);
+            root.getChildren().addAll(btcSentConfirmedHBox, waitingInfo, button);
         }
 
         @Override
         protected void onViewAttached() {
             super.onViewAttached();
+
+            btcSentConfirmation.setText(Res.get("bisqEasy.tradeState.info.seller.phase3b.btcSentConfirmation.ln", model.getFormattedBaseAmount()));
 
             button.setOnAction(e -> controller.onButtonClicked());
             waitingAnimation.play();
